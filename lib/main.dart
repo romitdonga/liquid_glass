@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:liquid_glass_demo/dashboard_page.dart';
+import 'package:liquid_glass_demo/main_navigation.dart';
 
 /// The main entry point of the application
 void main() {
@@ -9,7 +9,7 @@ void main() {
 /// The root widget of the application
 ///
 /// This widget configures the app's theme and sets up the MaterialApp
-/// with the DashboardPage as the home screen.
+/// with the MainNavigation as the home screen.
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const DashboardPage(),
+      home: const MainNavigation(),
     );
   }
 }

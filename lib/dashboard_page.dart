@@ -6,23 +6,19 @@ import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'dart:math' as math;
 import 'dart:ui';
 
-/// The main dashboard page widget displaying property listings
+/// The main dashboard page displaying property listings with glass morphism effect
 ///
-/// This StatefulWidget manages the entire dashboard interface including
-/// user profile, search functionality, property cards, and navigation.
-/// It demonstrates various glass morphism effects and animations.
+/// This StatefulWidget manages the dashboard interface including
+/// user profile, search functionality, and property cards.
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
   @override
-  State<DashboardPage> createState() => _DashboardPageState();
+  State<DashboardPage> createState() => DashboardPageState();
 }
 
-/// State management for the dashboard page
-///
-/// Handles scroll animations, search functionality, and UI state management.
-/// Implements scroll-based animations for the navigation tabs.
-class _DashboardPageState extends State<DashboardPage> {
+/// State class for the dashboard page with public methods for external control
+class DashboardPageState extends State<DashboardPage> {
   /// Controller for the search input field
   final TextEditingController _searchController = TextEditingController();
 
@@ -32,13 +28,9 @@ class _DashboardPageState extends State<DashboardPage> {
   /// Controller for tracking ListView scroll position
   final ScrollController _scrollController = ScrollController();
 
-  /// Current spacing between navigation tabs (animated based on scroll)
-  double _tabSpacing = 0.0;
-
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
   }
 
   @override
@@ -49,430 +41,370 @@ class _DashboardPageState extends State<DashboardPage> {
     super.dispose();
   }
 
-  /// Handles scroll events to animate navigation tab spacing
-  ///
-  /// This method creates a dynamic animation effect where the navigation
-  /// tabs spread apart when the user scrolls down, providing visual
-  /// feedback about scroll position.
-  void _onScroll() {
-    final offset = _scrollController.offset;
-
-    // Expand tabs when scrolled beyond 100px threshold
-    if (offset > 100) {
-      setState(() {
-        _tabSpacing = 150;
-      });
-    } else {
-      setState(() {
-        _tabSpacing = 0;
-      });
-    }
+  /// Public method to focus the search field from external widgets
+  void focusSearch() {
+    _searchFocusNode.requestFocus();
   }
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    // Set system UI style for status bar
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarBrightness: Brightness.dark,
       statusBarIconBrightness: Brightness.dark,
     ));
+
     return Scaffold(
       backgroundColor: const Color(0xFF032343),
       body: GestureDetector(
-        onTap: () {
-          _searchFocusNode.unfocus();
-        },
+        onTap: () => _searchFocusNode.unfocus(),
         child: Stack(
           children: [
+            // Animated background circles
             const CirclesBackground(),
-            ListView.separated(
-              controller: _scrollController,
-              itemCount: sampleHomes.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 16),
-              padding: const EdgeInsets.only(
-                top: 188,
-                left: 16,
-                right: 16,
-                bottom: 16,
-              ),
-              itemBuilder: (context, index) => ClipRRect(
-                borderRadius: BorderRadius.circular(36),
-                child: Stack(
-                  alignment: Alignment.bottomCenter,
-                  children: [
-                    AspectRatio(
-                      aspectRatio: 1,
-                      child: Image(
-                        image: AssetImage(sampleHomes[index].image),
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(36),
-                        bottomRight: Radius.circular(36),
-                      ),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                        child: Container(
-                          color: Colors.black.withOpacity(0.3),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      sampleHomes[index].name,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    Icon(
-                                      Icons.favorite_border_rounded,
-                                      color: Colors.white,
-                                      size: 24,
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.location_on_outlined,
-                                      color: Colors.white60,
-                                      size: 14,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      sampleHomes[index].location,
-                                      style: TextStyle(
-                                        color: Colors.white60,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.bed_outlined,
-                                      color: Colors.white,
-                                      size: 14,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      '${sampleHomes[index].numberOfRooms} Rooms',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Icon(
-                                      Icons.bathroom_outlined,
-                                      color: Colors.white,
-                                      size: 14,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      '${sampleHomes[index].numberOfBathrooms} Baths',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    Text(
-                                      '\$ ${sampleHomes[index].pricePerNight.toStringAsFixed(2)}/night',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+
+            // Property listings in a scrollable list
+            _buildPropertyList(),
+
+            // Gradient overlay at top for better readability
+            _buildTopGradientOverlay(),
+
+            // Top app bar with profile and search
+            _buildTopBar(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Builds the scrollable list of property cards
+  Widget _buildPropertyList() {
+    return ListView.separated(
+      controller: _scrollController,
+      itemCount: sampleHomes.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 16),
+      padding: const EdgeInsets.only(
+        top: 188,
+        left: 16,
+        right: 16,
+        bottom: 100, // Extra padding for bottom navigation bar
+      ),
+      itemBuilder: (_, index) => _buildPropertyCard(sampleHomes[index]),
+    );
+  }
+
+  /// Builds an individual property card with image and details
+  Widget _buildPropertyCard(HomeData home) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(36),
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          // Property image
+          AspectRatio(
+            aspectRatio: 1,
+            child: Image(
+              image: AssetImage(home.image),
+              width: double.infinity,
+              fit: BoxFit.cover,
             ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
+          ),
+
+          // Glass overlay with property details
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(36),
+              bottomRight: Radius.circular(36),
+            ),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
               child: Container(
-                height: 240,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFF032343).withOpacity(0),
-                      Color(0xFF032343),
-                    ],
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                  ),
-                ),
-              ),
-            ),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        LiquidGlass(
-                          blur: 3,
-                          settings: LiquidGlassSettings(
-                            ambientStrength: 0.5,
-                            lightAngle: 0.2 * math.pi,
-                            glassColor: Colors.white12,
-                          ),
-                          shape: LiquidRoundedSuperellipse(
-                            borderRadius: const Radius.circular(40),
-                          ),
-                          glassContainsChild: false,
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: ClipOval(
-                              child: Image.asset(
-                                'assets/alex-suprun.jpg',
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'James Doe',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.location_on_outlined,
-                                  color: Colors.white60,
-                                  size: 16,
-                                ),
-                                const SizedBox(width: 2),
-                                Text(
-                                  'New York, NY',
-                                  style: TextStyle(
-                                    color: Colors.white60,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        const Spacer(),
-                        LiquidGlass(
-                          blur: 3,
-                          settings: LiquidGlassSettings(
-                            ambientStrength: 0.5,
-                            lightAngle: -0.2 * math.pi,
-                            glassColor: Colors.white12,
-                          ),
-                          shape: LiquidRoundedSuperellipse(
-                            borderRadius: const Radius.circular(40),
-                          ),
-                          glassContainsChild: false,
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Icon(
-                              Icons.notifications_outlined,
-                              color: Colors.white,
-                              size: 24,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                      ),
-                      child: Row(
+                color: Colors.black.withOpacity(0.3),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      // Property name and favorite button
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: LiquidGlass(
-                              blur: 4,
-                              settings: LiquidGlassSettings(
-                                ambientStrength: 2,
-                                lightAngle: 0.4 * math.pi,
-                                glassColor: Colors.black12,
-                                thickness: 30,
-                              ),
-                              shape: LiquidRoundedSuperellipse(
-                                borderRadius: const Radius.circular(40),
-                              ),
-                              glassContainsChild: false,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 4.0),
-                                child: TextField(
-                                  controller: _searchController,
-                                  focusNode: _searchFocusNode,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                                  decoration: InputDecoration(
-                                    hintText: 'Search properties...',
-                                    hintStyle: TextStyle(
-                                      color: Colors.white60,
-                                      fontSize: 15,
-                                    ),
-                                    prefixIcon: Icon(
-                                      Icons.search,
-                                      color: Colors.white60,
-                                      size: 22,
-                                    ),
-                                    contentPadding: EdgeInsets.symmetric(
-                                      vertical: 12,
-                                    ),
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                              ),
+                          Text(
+                            home.name,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const Icon(
+                            Icons.favorite_border_rounded,
+                            color: Colors.white,
+                            size: 24,
+                          ),
+                        ],
+                      ),
+
+                      // Location info
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.location_on_outlined,
+                            color: Colors.white60,
+                            size: 14,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            home.location,
+                            style: const TextStyle(
+                              color: Colors.white60,
+                              fontSize: 12,
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    const Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                      ),
-                      child: LiquidGlassLayer(
-                        settings: LiquidGlassSettings(
-                          ambientStrength: 0.5,
-                          lightAngle: 0.2 * math.pi,
-                          glassColor: Colors.white12,
-                        ),
-                        child: AnimatedSize(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeOut,
-                          alignment: Alignment.center,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              LiquidGlass.inLayer(
-                                blur: 3,
-                                shape: LiquidRoundedSuperellipse(
-                                  borderRadius: const Radius.circular(40),
-                                ),
-                                glassContainsChild: false,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: Row(
-                                    children: [
-                                      LiquidGlass(
-                                        blur: 8,
-                                        settings: LiquidGlassSettings(
-                                          ambientStrength: 0.5,
-                                          lightAngle: 0.2 * math.pi,
-                                          glassColor: Colors.black26,
-                                          thickness: 10,
-                                        ),
-                                        shape: LiquidRoundedSuperellipse(
-                                          borderRadius:
-                                              const Radius.circular(40),
-                                        ),
-                                        glassContainsChild: false,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.home_outlined,
-                                                color: Colors.white,
-                                                size: 24,
-                                              ),
-                                              Text(
-                                                'Home',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Icon(
-                                          Icons.favorite_border_rounded,
-                                          color: Colors.white,
-                                          size: 24,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              AnimatedSize(
-                                alignment: Alignment.center,
-                                duration: const Duration(milliseconds: 300),
-                                curve: Curves.easeOut,
-                                child: Container(
-                                  width: _tabSpacing,
-                                  height: 0,
-                                ),
-                              ),
-                              LiquidGlass.inLayer(
-                                blur: 3,
-                                shape: LiquidRoundedSuperellipse(
-                                  borderRadius: const Radius.circular(40),
-                                ),
-                                glassContainsChild: false,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Icon(
-                                    Icons.person_outline,
-                                    color: Colors.white,
-                                    size: 32,
-                                  ),
-                                ),
-                              ),
-                            ],
+
+                      const SizedBox(height: 8),
+
+                      // Property details and price
+                      Row(
+                        children: [
+                          // Room count
+                          const Icon(
+                            Icons.bed_outlined,
+                            color: Colors.white,
+                            size: 14,
                           ),
-                        ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${home.numberOfRooms} Rooms',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+
+                          const SizedBox(width: 8),
+
+                          // Bathroom count
+                          const Icon(
+                            Icons.bathroom_outlined,
+                            color: Colors.white,
+                            size: 14,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${home.numberOfBathrooms} Baths',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+
+                          const Spacer(),
+
+                          // Price per night
+                          Text(
+                            '\$ ${home.pricePerNight.toStringAsFixed(2)}/night',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            )
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Creates a gradient overlay at the top of the screen
+  Widget _buildTopGradientOverlay() {
+    return Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      child: Container(
+        height: 240,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              const Color(0xFF032343).withOpacity(0),
+              const Color(0xFF032343),
+            ],
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Builds the top app bar with user profile and search
+  Widget _buildTopBar() {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+        child: Column(
+          children: [
+            // User profile and notifications row
+            Row(
+              children: [
+                // User avatar with glass effect
+                _buildGlassContainer(
+                  blur: 3,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/alex-suprun.jpg',
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 8),
+
+                // User name and location
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'James Doe',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Row(
+                      children: const [
+                        Icon(
+                          Icons.location_on_outlined,
+                          color: Colors.white60,
+                          size: 16,
+                        ),
+                        SizedBox(width: 2),
+                        Text(
+                          'New York, NY',
+                          style: TextStyle(
+                            color: Colors.white60,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+
+                const Spacer(),
+
+                // Notification button with glass effect
+                _buildGlassContainer(
+                  blur: 3,
+                  settings: LiquidGlassSettings(
+                    ambientStrength: 0.5,
+                    lightAngle: -0.2 * math.pi,
+                    glassColor: Colors.white12,
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Icon(
+                      Icons.notifications_outlined,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 8),
+
+            // Search bar
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: _buildSearchBar(),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  /// Builds the search bar with glass effect
+  Widget _buildSearchBar() {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildGlassContainer(
+            blur: 4,
+            settings: LiquidGlassSettings(
+              ambientStrength: 2,
+              lightAngle: 0.4 * math.pi,
+              glassColor: Colors.black12,
+              thickness: 30,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 4.0),
+              child: TextField(
+                controller: _searchController,
+                focusNode: _searchFocusNode,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+                decoration: const InputDecoration(
+                  hintText: 'Search properties...',
+                  hintStyle: TextStyle(
+                    color: Colors.white60,
+                    fontSize: 15,
+                  ),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.white60,
+                    size: 22,
+                  ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 12),
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Helper to create glass effect containers with consistent styling
+  Widget _buildGlassContainer({
+    required Widget child,
+    double blur = 4.0,
+    LiquidGlassSettings? settings,
+  }) {
+    return LiquidGlass(
+      blur: blur,
+      settings: settings ??
+          LiquidGlassSettings(
+            ambientStrength: 0.5,
+            lightAngle: 0.2 * math.pi,
+            glassColor: Colors.white12,
+          ),
+      shape: LiquidRoundedSuperellipse(
+        borderRadius: const Radius.circular(40),
+      ),
+      glassContainsChild: false,
+      child: child,
     );
   }
 }
