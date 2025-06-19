@@ -2,7 +2,7 @@
 
 A stunning Flutter demonstration app showcasing beautiful glassmorphism effects using the [`liquid_glass_renderer`](https://pub.dev/packages/liquid_glass_renderer) package. This demo presents a modern property rental interface with advanced visual effects and smooth animations.
 
-https://github.com/user-attachments/assets/ccf79049-4a6a-4656-b55f-5c21b0d23fd2
+[https://github.com/user-attachments/assets/ccf79049-4a6a-4656-b55f-5c21b0d23fd2](https://github.com/user-attachments/assets/88f466a7-a271-49c0-9fd3-e8873674c0e3)
 
 
 ## License
