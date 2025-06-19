@@ -1,7 +1,4 @@
-/// A data model representing a rental property
-///
-/// This class encapsulates all the essential information about a rental property,
-/// including location details, amenities, pricing, and associated imagery.
+/// Data model representing a rental property with essential information
 class HomeData {
   /// The name/title of the property
   final String name;
@@ -21,10 +18,8 @@ class HomeData {
   /// Asset path to the property's image
   final String image;
 
-  /// Creates a new HomeData instance
-  ///
-  /// All parameters are required to ensure complete property information.
-  HomeData({
+  /// Creates a new HomeData instance with required parameters
+  const HomeData({
     required this.name,
     required this.location,
     required this.numberOfRooms,
@@ -34,7 +29,7 @@ class HomeData {
   });
 }
 
-/// Sample rental property data for demonstration purposes
+/// Sample rental property data for demonstration
 ///
 /// This list contains curated property listings from various US locations
 /// to showcase the application's features and glass morphism effects.
@@ -45,7 +40,7 @@ final List<HomeData> sampleHomes = [
     numberOfRooms: 2,
     numberOfBathrooms: 1,
     pricePerNight: 285.0,
-    image: 'assets/home_1.jpeg',
+    image: 'assets/home_1.jpg',
   ),
   HomeData(
     name: "Cozy Beachfront Cottage",
@@ -53,7 +48,7 @@ final List<HomeData> sampleHomes = [
     numberOfRooms: 3,
     numberOfBathrooms: 2,
     pricePerNight: 420.0,
-    image: 'assets/home_2.jpeg',
+    image: 'assets/home_2.jpg',
   ),
   HomeData(
     name: "Historic Victorian Home",
@@ -61,7 +56,7 @@ final List<HomeData> sampleHomes = [
     numberOfRooms: 4,
     numberOfBathrooms: 3,
     pricePerNight: 195.0,
-    image: 'assets/home_3.jpeg',
+    image: 'assets/home_3.jpg',
   ),
   HomeData(
     name: "Mountain Cabin Retreat",
@@ -69,7 +64,7 @@ final List<HomeData> sampleHomes = [
     numberOfRooms: 5,
     numberOfBathrooms: 4,
     pricePerNight: 650.0,
-    image: 'assets/home_4.jpeg',
+    image: 'assets/home_4.jpg',
   ),
   HomeData(
     name: "Urban Studio Apartment",
@@ -77,6 +72,6 @@ final List<HomeData> sampleHomes = [
     numberOfRooms: 1,
     numberOfBathrooms: 1,
     pricePerNight: 125.0,
-    image: 'assets/home_5.jpeg',
+    image: 'assets/home_5.jpg',
   ),
 ];

@@ -6,7 +6,7 @@ import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'dart:math' as math;
 import 'dart:ui';
 
-/// The main dashboard page displaying property listings with glass morphism effect
+/// Main dashboard page displaying property listings with glass morphism effects
 ///
 /// This StatefulWidget manages the dashboard interface including
 /// user profile, search functionality, and property cards.
@@ -42,20 +42,18 @@ class DashboardPageState extends State<DashboardPage> {
   }
 
   /// Public method to focus the search field from external widgets
-  void focusSearch() {
-    _searchFocusNode.requestFocus();
-  }
+  void focusSearch() => _searchFocusNode.requestFocus();
 
   @override
   Widget build(BuildContext context) {
     // Set system UI style for status bar
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarBrightness: Brightness.dark,
-      statusBarIconBrightness: Brightness.dark,
+      statusBarBrightness: Brightness.light,
+      statusBarIconBrightness: Brightness.light,
     ));
 
     return Scaffold(
-      backgroundColor: const Color(0xFF032343),
+      backgroundColor: const Color(0xFF0D7787),
       body: GestureDetector(
         onTap: () => _searchFocusNode.unfocus(),
         child: Stack(
@@ -168,37 +166,13 @@ class DashboardPageState extends State<DashboardPage> {
                       // Property details and price
                       Row(
                         children: [
-                          // Room count
-                          const Icon(
-                            Icons.bed_outlined,
-                            color: Colors.white,
-                            size: 14,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${home.numberOfRooms} Rooms',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                            ),
-                          ),
+                          _buildPropertyFeature(Icons.bed_outlined,
+                              '${home.numberOfRooms} Rooms'),
 
                           const SizedBox(width: 8),
 
-                          // Bathroom count
-                          const Icon(
-                            Icons.bathroom_outlined,
-                            color: Colors.white,
-                            size: 14,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${home.numberOfBathrooms} Baths',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                            ),
-                          ),
+                          _buildPropertyFeature(Icons.bathroom_outlined,
+                              '${home.numberOfBathrooms} Baths'),
 
                           const Spacer(),
 
@@ -224,6 +198,27 @@ class DashboardPageState extends State<DashboardPage> {
     );
   }
 
+  /// Builds a property feature with icon and text
+  Widget _buildPropertyFeature(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          color: Colors.white,
+          size: 14,
+        ),
+        const SizedBox(width: 4),
+        Text(
+          text,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+          ),
+        ),
+      ],
+    );
+  }
+
   /// Creates a gradient overlay at the top of the screen
   Widget _buildTopGradientOverlay() {
     return Positioned(
@@ -235,8 +230,8 @@ class DashboardPageState extends State<DashboardPage> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              const Color(0xFF032343).withOpacity(0),
-              const Color(0xFF032343),
+              const Color(0xFF0D7787).withOpacity(0),
+              const Color(0xFF0D7787),
             ],
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
@@ -258,7 +253,7 @@ class DashboardPageState extends State<DashboardPage> {
               children: [
                 // User avatar with glass effect
                 _buildGlassContainer(
-                  blur: 3,
+                  blur: 2,
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: ClipOval(
@@ -311,7 +306,7 @@ class DashboardPageState extends State<DashboardPage> {
 
                 // Notification button with glass effect
                 _buildGlassContainer(
-                  blur: 3,
+                  blur: 2,
                   settings: LiquidGlassSettings(
                     ambientStrength: 0.5,
                     lightAngle: -0.2 * math.pi,
@@ -344,45 +339,39 @@ class DashboardPageState extends State<DashboardPage> {
 
   /// Builds the search bar with glass effect
   Widget _buildSearchBar() {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildGlassContainer(
-            blur: 4,
-            settings: LiquidGlassSettings(
-              ambientStrength: 2,
-              lightAngle: 0.4 * math.pi,
-              glassColor: Colors.black12,
-              thickness: 30,
+    return _buildGlassContainer(
+      blur: 1,
+      settings: LiquidGlassSettings(
+        ambientStrength: 2,
+        lightAngle: 0.4 * math.pi,
+        glassColor: Colors.black12,
+        thickness: 30,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 4.0),
+        child: TextField(
+          controller: _searchController,
+          focusNode: _searchFocusNode,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+          ),
+          decoration: const InputDecoration(
+            hintText: 'Search properties...',
+            hintStyle: TextStyle(
+              color: Colors.white60,
+              fontSize: 15,
             ),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 4.0),
-              child: TextField(
-                controller: _searchController,
-                focusNode: _searchFocusNode,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-                decoration: const InputDecoration(
-                  hintText: 'Search properties...',
-                  hintStyle: TextStyle(
-                    color: Colors.white60,
-                    fontSize: 15,
-                  ),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.white60,
-                    size: 22,
-                  ),
-                  contentPadding: EdgeInsets.symmetric(vertical: 12),
-                  border: InputBorder.none,
-                ),
-              ),
+            prefixIcon: Icon(
+              Icons.search,
+              color: Colors.white60,
+              size: 22,
             ),
+            contentPadding: EdgeInsets.symmetric(vertical: 12),
+            border: InputBorder.none,
           ),
         ),
-      ],
+      ),
     );
   }
 

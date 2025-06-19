@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
-/// Data model for an individual animated circle
-///
-/// Contains all the properties needed to define a circle's size,
-/// position, and orbital movement pattern.
+/// Data model for an individual animated circle with position and movement properties
 class CircleData {
   /// The radius of the circle in pixels
   final double radius;
@@ -21,7 +18,7 @@ class CircleData {
   /// Creates a new CircleData instance
   ///
   /// All parameters are required to define the circle's behavior
-  CircleData({
+  const CircleData({
     required this.radius,
     required this.centerX,
     required this.centerY,
@@ -29,7 +26,7 @@ class CircleData {
   });
 }
 
-/// Custom painter for rendering animated circles with blur effects
+/// Custom painter for rendering animated background circles with blur effects
 ///
 /// This painter draws multiple circles at their animated positions
 /// with a blur effect to create a soft, atmospheric background.
@@ -97,7 +94,7 @@ class _CirclesBackgroundState extends State<CirclesBackground>
   late List<Animation<double>> _animations;
 
   /// Circle data defining properties for each circle
-  final List<CircleData> _circles = [];
+  late List<CircleData> _circles;
 
   @override
   void initState() {
@@ -105,23 +102,21 @@ class _CirclesBackgroundState extends State<CirclesBackground>
     _initializeCircles();
   }
 
-  /// Initializes the animated circles with varying properties
+  /// Initializes the animated circles with varying properties for visual depth
   ///
-  /// Creates 8 circles with different sizes, positions, speeds,
+  /// Creates 6 circles with different sizes, positions, speeds,
   /// and orbital patterns to create visual depth and interest.
   void _initializeCircles() {
     _controllers = [];
     _animations = [];
-
-    // Create 8 animated circles with different properties
-    for (int i = 0; i < 8; i++) {
-      // Create animation controller with staggered durations (5-40 seconds)
+    _circles = List.generate(6, (i) {
+      // Create animation controller with staggered durations
       final controller = AnimationController(
-        duration: Duration(seconds: 5 + i * 5),
+        duration: Duration(seconds: 8 + i * 4),
         vsync: this,
       );
 
-      // Create circular animation (0 to 2π radians)
+      // Create circular animation
       final animation = Tween<double>(
         begin: 0,
         end: 2 * math.pi,
@@ -133,17 +128,17 @@ class _CirclesBackgroundState extends State<CirclesBackground>
       _controllers.add(controller);
       _animations.add(animation);
 
-      // Create circle with progressive sizing and positioning
-      _circles.add(CircleData(
-        radius: 40.0 + (i * 20), // Sizes from 40 to 180 pixels
-        centerX: 0.2 + (i * 0.15), // Spread across screen width
-        centerY: 0.3 + (i * 0.1), // Varied vertical positions
-        orbitRadius: 50.0 + (i * 30), // Orbital radius from 50 to 260 pixels
-      ));
-
-      // Start the animation (infinite loop)
+      // Start the animation loop
       controller.repeat();
-    }
+
+      // Return circle data with progressive sizing
+      return CircleData(
+        radius: 50.0 + (i * 25),
+        centerX: 0.2 + (i * 0.15) % 0.9,
+        centerY: 0.3 + (i * 0.1) % 0.6,
+        orbitRadius: 60.0 + (i * 20),
+      );
+    });
   }
 
   @override
@@ -158,13 +153,11 @@ class _CirclesBackgroundState extends State<CirclesBackground>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: Listenable.merge(_animations),
-      builder: (context, child) {
-        return CustomPaint(
-          painter: AnimatedCirclesPainter(_animations, _circles),
-          size: Size.infinite,
-        );
-      },
+      animation: Listenable.merge(_controllers),
+      builder: (context, _) => CustomPaint(
+        painter: AnimatedCirclesPainter(_animations, _circles),
+        size: Size.infinite,
+      ),
     );
   }
 }

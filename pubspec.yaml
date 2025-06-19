@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   liquid_glass_renderer: ^0.1.1-dev.7
   font_awesome_flutter: ^10.8.0
+  auto_size_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:
